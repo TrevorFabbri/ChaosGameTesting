@@ -16,28 +16,19 @@ int main()
 	RenderWindow window(vm, "Chaos Game", Style::Default);
 	
 	// Render a canvas here, same size as the window, to draw on
-	// Without this, if we just window display it will not keep the previous entires
+	// Without this, if we just window display it will not keep the previous shape
 	RenderTexture background;
 	background.create(1600, 900);
 	Sprite fill;
 	fill.setTexture(background.getTexture(), true);
 	fill.setColor(Color::White);
 	
-		//Texture backgrounds;
-		//backgrounds.loadFromFile("graphics/background.png");
-		//Sprite backing;
-		//backing.setTexture(backgrounds);
-		//backing.setPosition(0, 0);
-	
-	
-
-
 	// Create a Text object to display instructions
 	Text messageText;
 
 	// Choose a font, color, size, and instructions displayed
 	Font font;
-	font.loadFromFile("fonts/DS-DIGI.ttf");
+	font.loadFromFile("fonts/DS-DIGI.ttf"); // This will be different on linux
 	messageText.setFont(font);
 	messageText.setString("Click in 3 places to start the Chaos Game:");
 	messageText.setCharacterSize(35);
@@ -68,28 +59,8 @@ int main()
 	// Vector to hold the user inputted coordinates
 	vector<Vector2f> inputs;
 
-
-
 	// Create an intial shape to modify with user input later on
 	UserShape shape;
-
-	/*************************
-	* 
-	* vector<RectangleShape> outputs
-	* 
-	* Vector2f temp;
-	* temp.x = event.mouseButton.x;
-	* temp.y = event.mouseButton.y;
-	* RectangleShape tempRect(temp);
-	* 
-	* outputs.push_back();
-	* 
-	* for(int i = 0; i < outputs.size(); i++)
-	* {
-	*	window.draw(outputs[i]);
-	* }
-	* 
-	**************************/
 
 	while (window.isOpen())
 	{
@@ -101,7 +72,7 @@ int main()
 		Event event;
 		while (window.pollEvent(event))
 		{
-			if (event.type == Event::Closed)
+			if (event.type == Event::Closed || Keyboard::isKeyPressed(Keyboard::Escape))
 			{
 				// Close window when the X is pressed or ESC key pressed
 				window.close();
@@ -127,31 +98,25 @@ int main()
 				}
 			}
 			
-			// Handle the player exiting the program
-			if (Keyboard::isKeyPressed(Keyboard::Escape))
-			{
-				window.close();
-			}
 		}
 
-		// ********************
+		// ***************************
 		// BEGIN WINDOW DISPLAY UPDATE
-		// ********************
+		// ***************************
 		
 		window.clear();
+	
+		// Update the score text
+		std::stringstream ss;
+		ss << "Points input = " << score;
+		scoreText.setString(ss.str());
 
-		//window.draw(backing);
+		// Draw the score
+		window.draw(scoreText);
 
-		// If 4 click have happened, no more need for the  1st prompt
+		// If 4 click have happened, no more need for the 1st prompt
 		if (score < 3)
 		{		
-			// Update the score text
-			std::stringstream ss;
-			ss << "Points input = " << score;
-			scoreText.setString(ss.str());
-
-			// Draw the score
-			window.draw(scoreText);
 			window.draw(messageText);
 		}
 		
@@ -175,8 +140,6 @@ int main()
 			window.draw(shape.DrawUserShape());		// This is the outline of the shape the user inputted
 			background.display();					// Set the fill sprites inside of the original shape		
 			window.draw(fill);						// Draws the fill in sprites
-
-
 		}
 		else if(score == 4)		// On the 4th click initialize the shape
 		{
@@ -188,15 +151,16 @@ int main()
 		}
 		else if(score > 4)			// Start to display the shape after initialization
 		{	
-			
+
 			background.draw(shape.DrawFillshape()); // This will start displaying the fill sprite at the last inputted click
 			shape.update();							// Then it will update here to a new coordinate
+			score++;								// To display how many points there are
 			window.draw(shape.DrawUserShape());		// This is the outline of the shape the user inputted
 			background.display();					// Set the fill sprites inside of the original shape		
 			window.draw(fill);						// Draws the fill in sprites
 			acceptInput = false;
 		}
-		
+
 		window.display();		// Display the frame
 
 	}
