@@ -130,7 +130,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Chaos Game.cpp" />
+    <ClCompile Include="main.cpp" />
     <ClCompile Include="UserShape.cpp" />
   </ItemGroup>
   <ItemGroup>
